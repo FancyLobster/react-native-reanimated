@@ -139,6 +139,48 @@ function App() {
 
 </Indent>
 
+- You may pass the shared value down as props or store it in the context. As stated above, when you change the shared value (even in a child component), Reanimated will keep the shared value in sync between all the components (including a parent component). Reminder, this won't trigger a typical React re-render.
+
+<Indent>
+
+```javascript
+function ChildComponent({ sv }) { // shared value passed down from the ParentComponent
+
+  const onPressFunction = () => {
+    sv.value = 1; // will change the parent component background to black
+  }
+
+  return (
+    <Pressable onPress={onPressFunction}>
+      <Text>Turn Background From White to Black</Text>
+    </Pressable>
+  );
+};
+
+function ParentComponent() {
+
+  const sv = useSharedValue(0);
+
+  const bgStyle = useAnimatedStyle(() => {
+    return {
+      backgroundColor: interpolateColor(
+        sv.value,
+        [0, 1],
+        ["#FFFFFF", '#000000'] // initial background color is white
+      ),
+    };
+  });
+
+  return (
+    <Animated.View style={bgStyle}>
+      <ChildComponent sv={sv} />
+    </Animated.View>
+  );
+};
+```
+
+</Indent>
+
 ## Platform compatibility
 
 <div className="platform-compatibility">
